@@ -1,0 +1,52 @@
+.main-wrapper{
+  width: 950px;
+  height:500px;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+  border:1px solid #000;
+  background:#4CAF50;
+}
+.service-detail{
+	width: 500px;
+	height:400px;
+	margin: 10px 0 0 20px;
+	border:1px solid #000;
+	border-radius:10px;
+	background:#fff;
+	padding-left:15px;
+	
+	display: inline-block;
+}
+.book-service{
+	width: 400px;
+	height:480px;
+	margin: 10px 0 0 20px;
+	border:1px solid #000;
+	border-radius:10px;
+	background:#fff;
+	padding-left:15px;
+	display:inline-block;
+	position:absolute;
+}
+select{
+	
+  padding: 10px 20px 13px 30px; 
+  font-size:14px;
+  max-width: 100%; 
+  height: auto !important; 
+  border: 1px solid #e3e3e3; 
+  border-radius: 3px; 
+  background-color: #fff; 
+  color: #444444; 
+  line-height: 16px !important; 
+	cursor:pointer;
+  appearance: none; 
+  -webkit-appearance: none; 
+  
+}
+select option { 
+    padding: 0 4px; 
+} 
+
+

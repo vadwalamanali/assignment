@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+var request = new Request('http://52.69.49.40/assignment/getServiceData.php', {
+	method: 'GET',
+	mode: 'cors',
+  data: "json",
+  crossDomain: "true",
+  withCredentials: true
+});
+fetch(request).then(function(response) {
+	response.json().then(function(data) {
+		console.log(data);
+    printData(data);
+	
+	});
+})
+.catch(function(err) {
+  console.log('Fetch Error :-S', err);
+});
+function printData(data) {
+	serviceDetailsData(data);
+	serviceTypeDataAdding(data)
+	frequencyDataAdding(data)
+	document.querySelector("#serviceType select").addEventListener("click",calculateServiceTotal);
+	document.querySelector("#serviceFrequency select").addEventListener("click",calculateServiceTotal);
+}
+function serviceDetailsData(data){
+	var emptyDiv = document.createElement("div");
+	emptyDiv.innerHTML = data.subcategoryDescription;
+	document.querySelector(".service-detail").appendChild(emptyDiv);
+	document.querySelector("#bookServiceForm button").addEventListener("click", bookService);
+}
+function serviceTypeDataAdding(data){
+	var emptySelect = document.createElement("select");
+	data.variableData.forEach(function(val){
+		var tempOption = document.createElement("option");
+		tempOption.text = val.variableName;
+		tempOption.setAttribute("data-variablePayLaterCost", val.variablePayLaterCost);
+		tempOption.setAttribute("data-variablePriority", val.variablePriority);
+		tempOption.setAttribute("data-earnedMinutes", val.earnedMinutes);
+		tempOption.setAttribute("data-amcNumberOfServices", val.amcNumberOfServices);
+		tempOption.setAttribute("data-amcCost", val.amcCost);
+		tempOption.setAttribute("data-variablePayNowCost", val.variablePayNowCost);
+		tempOption.setAttribute("data-discountReceived", val.discountReceived);
+		emptySelect.add(tempOption);
+	})
+	serviceType.appendChild(emptySelect)
+	
+}
+function frequencyDataAdding(data){
+	var emptySelect = document.createElement("select");
+	data.frequencyData.forEach(function(val) {
+		var tempOption = document.createElement("option");
+
+		tempOption.text = val.caption;
+		tempOption.setAttribute("data-numberService", val.numberOfServices);
+		tempOption.setAttribute("data-multiplyingFactor", val.multiplyingFactor);
+		emptySelect.add(tempOption);
+	})
+	serviceFrequency.appendChild(emptySelect)
+}
+function calculateServiceTotal(data){
+	if (event.target.parentElement.getAttribute("id") === "serviceFrequency") {
+		price1 = event.target.options[event.target.selectedIndex].getAttribute("data-multiplyingfactor")
+	} else if (event.target.parentElement.getAttribute("id") === "serviceType") {
+		price2 = event.target.options[event.target.selectedIndex].getAttribute("data-variablepaynowcost")
+	}
+
+	document.querySelector("#finalPrice").innerText = parseFloat(price1) * parseFloat(price2)
+	
+}	
+function bookService(event) {
+	event.preventDefault();
+	var val = {};
+	val.service = document.querySelector("#service select").value;
+	val.serviceType = document.querySelector("#serviceType select").value;
+	val.serviceFrequency = document.querySelector("#serviceFrequency select").value;
+	val.date = document.querySelector("#date input").value;
+	val.time = document.querySelector("#time select").value;
+	val.comment = document.querySelector("#comment input").value;
+	localStorage.setItem('serviceBookingValue', JSON.stringify(val));
+	
+}
+</script>
+</head>
+<body>
+	<div class="main-wrapper">
+		<div class="service-detail"></div>
+		<div class="book-service">
+			<form action="cart.php" method="get" id="bookServiceForm">
+				<div class="form-row">
+					<div class="form-group col-md-5" id="service">
+						<strong>Select Service</strong>
+						<select>
+							<option selected>Cleaning</option>
+						</select>
+					</div>
+					<div class="form-group col-md-6" id="serviceType">
+						<strong>Select Type</strong>
+					</div>
+				</div>	
+					<div class="form-group col-md-6" id="serviceFrequency">
+						<strong>Frequency</strong>
+					</div>
+				<div class="form-row">
+					<div class="form-group col-md-12" id="date">
+						<strong>Date</strong>
+						<input class="form-control" type="date">
+					</div>
+					<div class="form-group col-md-12" id="time">
+						<strong>Time</strong>
+						<select class="form-control">
+							<option>select time</option>
+							<option>1 PM</option>
+							<option>2 PM</option>
+							<option>3 PM</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group" id="comment">
+						<strong>additional comment</strong>
+						<input type="text" class="form-control" placeholder="comment here">
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						 <strong>service total</strong>
+					</div>
+					<div class="form-group col-md-4" >
+						 <span>&#8377;</span><span id="finalPrice">1499</span>
+					</div>
+				</div>
+					<button type="submit"  class="btn btn-primary btn-block" >Book Service</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
